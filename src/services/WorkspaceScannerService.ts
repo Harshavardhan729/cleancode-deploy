@@ -3,11 +3,12 @@ import { Logger } from '../utils/Logger';
 
 export class WorkspaceScannerService {
 
-    public scan(): void {
+    public async scan(): Promise<void> {
 
         const workspaceFolders = vscode.workspace.workspaceFolders;
 
         if (!workspaceFolders || workspaceFolders.length === 0) {
+
             vscode.window.showWarningMessage(
                 'No workspace is currently open.'
             );
@@ -21,8 +22,19 @@ export class WorkspaceScannerService {
 
         Logger.info(`Workspace Path: ${workspacePath}`);
 
+        Logger.info('Scanning workspace files...');
+
+        const files = await vscode.workspace.findFiles('**/*');
+
+        Logger.info(`Total Files Found: ${files.length}`);
+
+        for (const file of files) {
+
+            Logger.info(file.fsPath);
+        }
+
         vscode.window.showInformationMessage(
-            `Workspace found:\n${workspacePath}`
+            `Workspace scan completed.\nFiles Found: ${files.length}`
         );
     }
 }

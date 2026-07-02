@@ -12,13 +12,13 @@ export class ScanWorkspaceCommand {
 
         const disposable = vscode.commands.registerCommand(
             ScanWorkspaceCommand.commandId,
-            () => {
+            async () => {
 
                 Logger.info('Starting workspace scan...');
 
                 const scanner = new WorkspaceScannerService();
 
-                scanner.scan();
+                await scanner.scan();
 
                 Logger.info('Workspace scan completed.');
             }
