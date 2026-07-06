@@ -3,6 +3,8 @@ import * as vscode from 'vscode';
 import { IRule } from '../interfaces/IRule';
 import { Issue } from '../../models/Issue';
 import { IssueSeverity } from '../../models/IssueSeverity';
+import { RuleMetadata } from '../../models/RuleMetadata';
+import { RuleCategory } from '../../models/RuleCategory';
 
 export class CommentedCodeRule implements IRule {
 
@@ -10,6 +12,28 @@ export class CommentedCodeRule implements IRule {
 
     public readonly description =
         'Detect commented-out code';
+    
+    public get metadata(): RuleMetadata {
+
+        return {
+
+            id: this.id,
+
+            title: this.id,
+
+            description: this.description,
+
+            severity: IssueSeverity.Warning,
+
+            category: RuleCategory.Maintainability,
+
+            autoFixSupported: true,
+
+            enabledByDefault: true
+
+        };
+
+    }
 
     public async analyze(
         document: vscode.TextDocument

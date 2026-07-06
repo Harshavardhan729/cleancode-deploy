@@ -7,11 +7,15 @@ import { ScanReport } from '../models/ScanReport';
 import { AnalyzerEngine } from './AnalyzerEngine';
 import { DiagnosticService } from './DiagnosticService';
 import { FileFilterService } from './FileFilterService';
+import { StatusBarService } from './StatusBarService';
+import { IssueExplorerService } from './IssueExplorerService';
+import { IssueExplorerItem } from '../models/IssueExplorerItem';
 
 export class WorkspaceScannerService {
 
-    public async scan(): Promise<void> {
-
+    public async scan(
+        token?: vscode.CancellationToken
+    ): Promise<boolean> {
         const workspaceFolders = vscode.workspace.workspaceFolders;
 
         if (!workspaceFolders || workspaceFolders.length === 0) {
@@ -22,7 +26,7 @@ export class WorkspaceScannerService {
 
             Logger.warning('No workspace found.');
 
-            return;
+            return false;
         }
 
         const workspacePath = workspaceFolders[0].uri.fsPath;
@@ -44,8 +48,21 @@ export class WorkspaceScannerService {
         Logger.info(`Total Files Found: ${files.length}`);
 
         const languages = new Map<string, number>();
-
+        const issueMap = new Map<string, IssueExplorerItem[]>();
+        
         for (const file of files) {
+            if (token?.isCancellationRequested) {
+                StatusBarService.cancelled();
+
+                Logger.warning('Workspace scan cancelled.');
+
+                vscode.window.showInformationMessage(
+                    'Workspace scan cancelled.'
+                );
+
+                return false;
+
+            }
 
             if (!FileFilterService.isSupported(file.fsPath)) {
                 Logger.info(`Skipping unsupported file: ${file.fsPath}`);
@@ -68,6 +85,22 @@ export class WorkspaceScannerService {
             );
 
             issues.forEach(issue => {
+
+                const fileIssues =
+                    issueMap.get(issue.file) ?? [];
+
+                fileIssues.push({
+                    type: 'issue',
+                    label: `${issue.ruleId} - ${issue.message} (Line ${issue.line})`,
+                    file: issue.file,
+                    line: issue.line,
+                    column: issue.column
+                });
+
+                issueMap.set(
+                    issue.file,
+                    fileIssues
+                );
 
                 Logger.warning(
 
@@ -94,8 +127,27 @@ Column : ${issue.column}`
 
         ReportGenerator.print(report);
 
+        // Update the Issue Explorer
+        const explorerItems: IssueExplorerItem[] =
+            Array.from(issueMap.entries()).map(
+                ([file, children]) => ({
+                    type: 'file',
+                    label: file,
+                    file,
+                    children
+                })
+            );
+        
+        IssueExplorerService.update(explorerItems);
+
         vscode.window.showInformationMessage(
             `Workspace scan completed.\nFiles Found: ${files.length}`
         );
+
+        Logger.info('==============================');
+        Logger.info('Issues collected');
+        Logger.info('==============================');
+        
+        return true;
     }
 }

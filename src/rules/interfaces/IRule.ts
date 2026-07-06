@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { Issue } from '../../models/Issue';
+import { RuleMetadata } from '../../models/RuleMetadata';
 
 export interface IRule {
 
@@ -7,6 +8,7 @@ export interface IRule {
 
     readonly description: string;
 
+    readonly metadata: RuleMetadata;
     analyze(
         document: vscode.TextDocument
     ): Promise<Issue[]>;

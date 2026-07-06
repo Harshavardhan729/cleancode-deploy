@@ -3,6 +3,7 @@
   "displayName": "cleancode-deploy",
   "description": "Universal deployment cleanup extension for all programming languages and tools.",
   "version": "0.0.1",
+  "icon": "resources/icon.png",
   "engines": {
     "vscode": "^1.125.0"
   },
@@ -20,8 +21,33 @@
     {
       "command": "cleancode-deploy.scanWorkspace",
       "title": "CleanCode Deploy: Scan Workspace"
+    },
+    {
+      "command": "cleancode-deploy.listRules",
+      "title": "CleanCode Deploy: List Rules"
+    },
+    {
+      "command": "cleancode-deploy.openIssue",
+      "title": "CleanCode Deploy: Open Issue"
     }
   ],
+  "viewsContainers": {
+    "activitybar": [
+      {
+        "id": "cleancodeDeploy",
+        "title": "CleanCode Deploy",
+        "icon": "resources/icon.svg"
+      }
+    ]
+  },
+  "views": {
+    "cleancodeDeploy": [
+      {
+        "id": "cleancodeDeploy.issueExplorer",
+        "name": "Issue Explorer"
+      }
+    ]
+  },
   "configuration": {
     "title": "CleanCode Deploy",
     "properties": {

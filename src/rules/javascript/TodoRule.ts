@@ -1,5 +1,6 @@
 import { IssueSeverity } from '../../models/IssueSeverity';
 import { TextPatternRule } from '../base/TextPatternRule';
+import { RuleCategory } from '../../models/RuleCategory';
 
 export class TodoRule extends TextPatternRule {
 
@@ -16,5 +17,23 @@ export class TodoRule extends TextPatternRule {
 
     protected override severity =
         IssueSeverity.Info;
+    
+    protected override ignoreCommentLines =
+        false;
+    
+    protected readonly category =
+        RuleCategory.Documentation;
+    
+    public override get metadata() {
+
+        return {
+
+            ...super.metadata,
+
+            title: 'TODO Comment'
+
+        };
+
+    }
 
 }
