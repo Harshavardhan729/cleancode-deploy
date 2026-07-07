@@ -49,7 +49,6 @@ export class ScanWorkspaceCommand {
                         const completed = await scanner.scan(token);
 
                         if (completed) {
-                            StatusBarService.completed();
                             Logger.info('Workspace scan completed.');
 
                             progress.report({

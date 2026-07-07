@@ -7,6 +7,10 @@ import { ListRulesCommand } from './commands/ListRulesCommand';
 import { IssueTreeDataProvider } from './views/IssueTreeDataProvider';
 import { IssueExplorerService } from './services/IssueExplorerService';
 import { OpenIssueCommand } from './commands/OpenIssueCommand';
+import { ClearIssuesCommand } from './commands/ClearIssuesCommand';
+import { ReloadConfigurationCommand } from './commands/ReloadConfigurationCommand';
+import { ShowStatisticsCommand } from './commands/ShowStatisticsCommand';
+import { PreviewHtmlReportCommand } from './commands/PreviewHtmlReportCommand';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -17,20 +21,28 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const issueProvider = new IssueTreeDataProvider();
 
-	IssueExplorerService.register(issueProvider);
-
-	context.subscriptions.push(
+	const issueTreeView =
 		vscode.window.createTreeView(
 			'cleancodeDeploy.issueExplorer',
 			{
 				treeDataProvider: issueProvider
 			}
-		)
+		);
+
+	IssueExplorerService.register(
+		issueProvider,
+		issueTreeView
 	);
+
+	context.subscriptions.push(issueTreeView);
 	
 	ScanWorkspaceCommand.register(context);
 	ListRulesCommand.register(context);
 	OpenIssueCommand.register(context);
+	ClearIssuesCommand.register(context);
+	ReloadConfigurationCommand.register(context);
+	ShowStatisticsCommand.register(context);
+	PreviewHtmlReportCommand.register(context);
 	
 	context.subscriptions.push(
 		vscode.languages.registerCodeActionsProvider(
@@ -49,6 +61,24 @@ export function activate(context: vscode.ExtensionContext) {
 				'Hello from CleanCode Deploy 🚀'
 			);
 		}
+	);
+
+	context.subscriptions.push(
+		vscode.workspace.onDidChangeConfiguration(event => {
+
+			if (
+				event.affectsConfiguration(
+					'cleancodeDeploy.rules'
+				)
+			) {
+
+				vscode.window.showInformationMessage(
+					'CleanCode Deploy configuration updated.'
+				);
+
+			}
+
+		})
 	);
 
 	context.subscriptions.push(disposable);

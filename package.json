@@ -12,53 +12,131 @@
   ],
   "activationEvents": [],
   "main": "./dist/extension.js",
-"contributes": {
-  "commands": [
-    {
-      "command": "cleancode-deploy.helloWorld",
-      "title": "Hello World"
-    },
-    {
-      "command": "cleancode-deploy.scanWorkspace",
-      "title": "CleanCode Deploy: Scan Workspace"
-    },
-    {
-      "command": "cleancode-deploy.listRules",
-      "title": "CleanCode Deploy: List Rules"
-    },
-    {
-      "command": "cleancode-deploy.openIssue",
-      "title": "CleanCode Deploy: Open Issue"
-    }
-  ],
-  "viewsContainers": {
-    "activitybar": [
+  "contributes": {
+    "commands": [
       {
-        "id": "cleancodeDeploy",
-        "title": "CleanCode Deploy",
-        "icon": "resources/icon.svg"
-      }
-    ]
-  },
-  "views": {
-    "cleancodeDeploy": [
+        "command": "cleancode-deploy.helloWorld",
+        "title": "Hello World"
+      },
       {
-        "id": "cleancodeDeploy.issueExplorer",
-        "name": "Issue Explorer"
+        "command": "cleancode-deploy.scanWorkspace",
+        "title": "CleanCode Deploy: Scan Workspace",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "cleancode-deploy.listRules",
+        "title": "CleanCode Deploy: List Rules"
+      },
+      {
+        "command": "cleancode-deploy.openIssue",
+        "title": "CleanCode Deploy: Open Issue"
+      },
+      {
+        "command": "cleancode-deploy.clearIssues",
+        "title": "CleanCode Deploy: Clear Issues",
+        "icon": "$(clear-all)"
+      },
+      {
+        "command": "cleancode-deploy.reloadConfiguration",
+        "title": "CleanCode Deploy: Reload Configuration",
+        "icon": "$(sync)"
+      },
+      {
+        "command": "cleancode-deploy.showStatistics",
+        "title": "CleanCode Deploy: Show Statistics",
+        "icon": "$(graph)"
+      },
+      {
+        "command": "cleancode-deploy.previewHtmlReport",
+        "title": "CleanCode Deploy: Preview HTML Report",
+        "icon": "$(preview)"
       }
-    ]
-  },
-  "configuration": {
-    "title": "CleanCode Deploy",
-    "properties": {
-      "cleancodeDeploy.rules.consoleLog": {
-        "type": "boolean",
-        "default": true,
-        "description": "Detect console.log statements."
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "cleancodeDeploy",
+          "title": "CleanCode Deploy",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "cleancodeDeploy": [
+        {
+          "id": "cleancodeDeploy.issueExplorer",
+          "name": "Issue Explorer"
+        }
+      ]
+    },
+    "menus": {
+      "view/item/context": [
+        {
+          "command": "cleancode-deploy.openIssue",
+          "when": "view == cleancodeDeploy.issueExplorer && viewItem == issue",
+          "group": "navigation"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "cleancode-deploy.scanWorkspace",
+          "when": "view == cleancodeDeploy.issueExplorer",
+          "group": "navigation"
+        },
+        {
+          "command": "cleancode-deploy.showStatistics",
+          "when": "view == cleancodeDeploy.issueExplorer",
+          "group": "navigation"
+        },
+        {
+          "command": "cleancode-deploy.clearIssues",
+          "when": "view == cleancodeDeploy.issueExplorer",
+          "group": "navigation"
+        },
+        {
+          "command": "cleancode-deploy.previewHtmlReport",
+          "when": "view == cleancodeDeploy.issueExplorer",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "CleanCode Deploy",
+      "order": 1,
+      "properties": {
+        "cleancodeDeploy.rules.consoleLog": {
+          "type": "boolean",
+          "default": true,
+          "description": "Detect console.log statements."
+        },
+        "cleancodeDeploy.rules.debugger": {
+          "type": "boolean",
+          "default": true,
+          "description": "Detect debugger statements."
+        },
+        "cleancodeDeploy.rules.alert": {
+          "type": "boolean",
+          "default": true,
+          "description": "Detect alert() statements."
+        },
+        "cleancodeDeploy.rules.todo": {
+          "type": "boolean",
+          "default": true,
+          "description": "Detect TODO comments."
+        },
+        "cleancodeDeploy.rules.fixme": {
+          "type": "boolean",
+          "default": true,
+          "description": "Detect FIXME comments."
+        },
+        "cleancodeDeploy.rules.commentedCode": {
+          "type": "boolean",
+          "default": true,
+          "description": "Detect commented-out code."
+        }
       }
     }
-  }
-},
+  },
   "scripts": {
     "vscode:prepublish": "npm run package",
     "compile": "webpack",

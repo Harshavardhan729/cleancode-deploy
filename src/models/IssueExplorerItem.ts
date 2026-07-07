@@ -1,3 +1,5 @@
+import { IssueSeverity } from './IssueSeverity';
+
 export type IssueExplorerItemType =
     'file' |
     'issue';
@@ -13,6 +15,8 @@ export interface IssueExplorerItem {
     line?: number;
 
     column?: number;
+
+    severity?: IssueSeverity;
 
     children?: IssueExplorerItem[];
 

@@ -35,6 +35,40 @@ export class IssueTreeDataProvider
             collapsibleState
         );
 
+        treeItem.tooltip =
+            element.type === 'file'
+                ? element.file
+                : `${element.label}\nFile: ${element.file}\nLine: ${element.line}\nColumn: ${element.column}`;
+
+        if (element.type === 'file') {
+
+            treeItem.iconPath =
+                new vscode.ThemeIcon('file');
+
+        } else if (element.label === '✔ No issues found') {
+
+            treeItem.iconPath =
+                new vscode.ThemeIcon('check');
+
+        } else if (element.severity === 'Info') {
+
+            treeItem.iconPath =
+                new vscode.ThemeIcon('info');
+
+        } else if (element.severity === 'Error') {
+
+            treeItem.iconPath =
+                new vscode.ThemeIcon('error');
+
+        } else {
+
+            treeItem.iconPath =
+                new vscode.ThemeIcon('warning');
+
+        }
+
+        treeItem.contextValue = element.type;
+
         if (element.type === 'issue') {
 
             treeItem.command = {
@@ -63,7 +97,7 @@ export class IssueTreeDataProvider
             return Promise.resolve([
                 {
                     type: 'issue',
-                    label: 'No issues'
+                    label: '✔ No issues found'
                 }
             ]);
         }

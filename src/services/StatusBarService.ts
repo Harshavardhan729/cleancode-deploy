@@ -33,6 +33,30 @@ export class StatusBarService {
 
     }
 
+    public static healthScore(
+        score: number
+    ): void {
+
+        let icon = '$(error)';
+
+        if (score >= 90) {
+
+            icon = '$(pass)';
+
+        } else if (score >= 70) {
+
+            icon = '$(warning)';
+
+        }
+
+        this.statusBar.text =
+            `${icon} CleanCode: ${score}/100`;
+
+        this.statusBar.tooltip =
+            `Project Health Score: ${score}/100`;
+
+    }
+
     public static cancelled(): void {
 
         this.statusBar.text =

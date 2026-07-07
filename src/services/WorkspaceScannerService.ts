@@ -10,6 +10,8 @@ import { FileFilterService } from './FileFilterService';
 import { StatusBarService } from './StatusBarService';
 import { IssueExplorerService } from './IssueExplorerService';
 import { IssueExplorerItem } from '../models/IssueExplorerItem';
+import { IssueSeverity } from '../models/IssueSeverity';
+import { StatisticsService } from './StatisticsService';
 
 export class WorkspaceScannerService {
 
@@ -49,6 +51,12 @@ export class WorkspaceScannerService {
 
         const languages = new Map<string, number>();
         const issueMap = new Map<string, IssueExplorerItem[]>();
+
+        let totalIssues = 0;
+        let warningCount = 0;
+        let infoCount = 0;
+        let errorCount = 0;
+
         
         for (const file of files) {
             if (token?.isCancellationRequested) {
@@ -86,6 +94,25 @@ export class WorkspaceScannerService {
 
             issues.forEach(issue => {
 
+                totalIssues++;
+
+                switch (issue.severity) {
+
+                    case IssueSeverity.Warning:
+                        warningCount++;
+                        break;
+
+                    case IssueSeverity.Info:
+                        infoCount++;
+                        break;
+
+                    case IssueSeverity.Error:
+                        errorCount++;
+                        break;
+
+                }
+
+
                 const fileIssues =
                     issueMap.get(issue.file) ?? [];
 
@@ -94,7 +121,8 @@ export class WorkspaceScannerService {
                     label: `${issue.ruleId} - ${issue.message} (Line ${issue.line})`,
                     file: issue.file,
                     line: issue.line,
-                    column: issue.column
+                    column: issue.column,
+                    severity: issue.severity
                 });
 
                 issueMap.set(
@@ -127,26 +155,72 @@ Column : ${issue.column}`
 
         ReportGenerator.print(report);
 
+        const issueDensity =
+            files.length === 0
+                ? 0
+                : totalIssues / files.length;
+
+        const healthScore =
+            Math.max(
+                0,
+                Math.round(100 - issueDensity * 20)
+            );
+        
+        StatisticsService.update({
+            totalFiles: files.length,
+            totalIssues,
+            warningCount,
+            infoCount,
+            errorCount,
+            issueDensity,
+            healthScore,
+            languageCounts: languages,
+            scanTime: new Date()
+        });
+
         // Update the Issue Explorer
         const explorerItems: IssueExplorerItem[] =
             Array.from(issueMap.entries()).map(
-                ([file, children]) => ({
-                    type: 'file',
-                    label: file,
-                    file,
-                    children
-                })
+                ([file, children]) => {
+
+                    children.sort(
+                        (a, b) =>
+                            (a.line ?? 0) - (b.line ?? 0)
+                    );
+
+                    const relativePath = vscode.workspace.asRelativePath(file);
+
+                    return {
+                        type: 'file',
+                        label: `${relativePath} (${children.length})`,
+                        file,
+                        children
+                    };
+
+                }
             );
+        explorerItems.sort(
+            (a, b) =>
+                (a.file ?? '').localeCompare(b.file ?? '')
+        );
         
-        IssueExplorerService.update(explorerItems);
+        if (explorerItems.length === 0) {
+
+            IssueExplorerService.clear();
+
+        } else {
+            IssueExplorerService.update(explorerItems);
+        }
+
+        StatusBarService.healthScore(
+            healthScore
+        );
 
         vscode.window.showInformationMessage(
             `Workspace scan completed.\nFiles Found: ${files.length}`
         );
 
-        Logger.info('==============================');
-        Logger.info('Issues collected');
-        Logger.info('==============================');
+        
         
         return true;
     }

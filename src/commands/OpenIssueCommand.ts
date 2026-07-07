@@ -12,9 +12,19 @@ export class OpenIssueCommand {
 
         const disposable = vscode.commands.registerCommand(
             OpenIssueCommand.commandId,
-            async (item: IssueExplorerItem) => {
+            async (item: IssueExplorerItem | undefined) => {
+
+                if (!item) {
+                    vscode.window.showWarningMessage(
+                        'No issue selected.'
+                    );
+                    return;
+                }
 
                 if (!item.file || !item.line) {
+                    vscode.window.showWarningMessage(
+                        'Selected item does not contain file information.'
+                    );
                     return;
                 }
 

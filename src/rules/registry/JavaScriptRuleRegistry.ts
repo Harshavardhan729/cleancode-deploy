@@ -17,11 +17,25 @@ export class JavaScriptRuleRegistry {
             rules.push(new ConsoleLogRule());
         }
 
-        rules.push(new DebuggerRule());
-        rules.push(new AlertRule());
-        rules.push(new TodoRule());
-        rules.push(new FixmeRule());
-        rules.push(new CommentedCodeRule());
+        if (ConfigurationService.isRuleEnabled('debugger')) {
+            rules.push(new DebuggerRule());
+        }
+
+        if (ConfigurationService.isRuleEnabled('alert')) {
+            rules.push(new AlertRule());
+        }
+
+        if (ConfigurationService.isRuleEnabled('todo')) {
+            rules.push(new TodoRule());
+        }
+
+        if (ConfigurationService.isRuleEnabled('fixme')) {
+            rules.push(new FixmeRule());
+        }
+
+        if (ConfigurationService.isRuleEnabled('commentedCode')) {
+            rules.push(new CommentedCodeRule());
+        }
 
         return rules;
     }
