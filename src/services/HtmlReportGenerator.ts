@@ -117,6 +117,18 @@ h1{
     color:#007acc;
 }
 
+.metadata{
+    background:white;
+    padding:15px 20px;
+    border-left:6px solid #007acc;
+    margin-bottom:25px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.metadata p{
+    margin:6px 0;
+}
+
 .summary{
     display:flex;
     gap:20px;
@@ -213,6 +225,14 @@ th{
 <body>
 
 <h1>CleanCode Deploy Report</h1>
+<div class="metadata">
+
+<p><strong>Tool:</strong> CleanCode Deploy</p>
+<p><strong>Report Type:</strong> HTML</p>
+<p><strong>Version:</strong> 0.0.1</p>
+<p><strong>Generated At:</strong> ${report.generatedAt.toLocaleString()}</p>
+
+</div>
 
 <div class="summary">
 

@@ -8,7 +8,16 @@ export class FileFilterService {
         filePath: string
     ): boolean {
 
-        const extension = path.extname(filePath).toLowerCase();
+        if (
+            filePath.endsWith('.cleancode-backup')
+        ) {
+
+            return false;
+
+        }
+
+        const extension =
+            path.extname(filePath).toLowerCase();
 
         return SupportedExtensions.includes(extension);
 

@@ -11,6 +11,8 @@ import { ClearIssuesCommand } from './commands/ClearIssuesCommand';
 import { ReloadConfigurationCommand } from './commands/ReloadConfigurationCommand';
 import { ShowStatisticsCommand } from './commands/ShowStatisticsCommand';
 import { PreviewHtmlReportCommand } from './commands/PreviewHtmlReportCommand';
+import { ExportHtmlReportCommand } from './commands/ExportHtmlReportCommand';
+import { AutoFixWorkspaceCommand } from './commands/AutoFixWorkspaceCommand';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -43,6 +45,8 @@ export function activate(context: vscode.ExtensionContext) {
 	ReloadConfigurationCommand.register(context);
 	ShowStatisticsCommand.register(context);
 	PreviewHtmlReportCommand.register(context);
+	ExportHtmlReportCommand.register(context);
+	AutoFixWorkspaceCommand.register(context);
 	
 	context.subscriptions.push(
 		vscode.languages.registerCodeActionsProvider(

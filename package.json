@@ -50,6 +50,16 @@
         "command": "cleancode-deploy.previewHtmlReport",
         "title": "CleanCode Deploy: Preview HTML Report",
         "icon": "$(preview)"
+      },
+      {
+        "command": "cleancode-deploy.exportHtmlReport",
+        "title": "CleanCode Deploy: Export HTML Report",
+        "icon": "$(save)"
+      },
+      {
+        "command": "cleancode-deploy.autoFixWorkspace",
+        "title": "CleanCode Deploy: Auto Fix Workspace",
+        "icon": "$(tools)"
       }
     ],
     "viewsContainers": {
@@ -84,17 +94,27 @@
           "group": "navigation"
         },
         {
+          "command": "cleancode-deploy.autoFixWorkspace",
+          "when": "view == cleancodeDeploy.issueExplorer",
+          "group": "navigation"
+        },
+        {
           "command": "cleancode-deploy.showStatistics",
           "when": "view == cleancodeDeploy.issueExplorer",
           "group": "navigation"
         },
         {
-          "command": "cleancode-deploy.clearIssues",
+          "command": "cleancode-deploy.previewHtmlReport",
           "when": "view == cleancodeDeploy.issueExplorer",
           "group": "navigation"
         },
         {
-          "command": "cleancode-deploy.previewHtmlReport",
+          "command": "cleancode-deploy.exportHtmlReport",
+          "when": "view == cleancodeDeploy.issueExplorer",
+          "group": "navigation"
+        },
+        {
+          "command": "cleancode-deploy.clearIssues",
           "when": "view == cleancodeDeploy.issueExplorer",
           "group": "navigation"
         }
@@ -104,6 +124,11 @@
       "title": "CleanCode Deploy",
       "order": 1,
       "properties": {
+        "cleancodeDeploy.autoFix.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable or disable Auto Fix functionality."
+        },
         "cleancodeDeploy.rules.consoleLog": {
           "type": "boolean",
           "default": true,
