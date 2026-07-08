@@ -8,5 +8,6 @@ export const IGNORED_FOLDERS: string[] = [
     'vendor',
     '.next',
     '.idea',
-    '.vscode'
+    '.vscode',
+    '.cleancode-backups'
 ];

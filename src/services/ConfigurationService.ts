@@ -26,4 +26,12 @@ export class ConfigurationService {
 
     }
 
+    public static isBackupEnabled(): boolean {
+
+        return vscode.workspace
+            .getConfiguration('cleancodeDeploy.backup')
+            .get<boolean>('enabled', true);
+
+    }
+
 }

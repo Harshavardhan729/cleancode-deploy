@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { FixResult } from '../models/FixResult';
 import { AutoFixRegistry } from '../fixers/AutoFixRegistry';
+import { ConfigurationService } from './ConfigurationService';
 
 export class AutoFixEngine {
 
@@ -61,15 +62,37 @@ export class AutoFixEngine {
         const updatedText =
             filteredLines.join('\n');
 
-        const backupUri =
-            vscode.Uri.file(
-                `${file.fsPath}.cleancode-backup`
+        if (ConfigurationService.isBackupEnabled()) {
+
+            const workspaceFolder =
+                vscode.workspace.getWorkspaceFolder(file);
+
+            const backupRoot =
+                workspaceFolder
+                    ? vscode.Uri.joinPath(
+                        workspaceFolder.uri,
+                        '.cleancode-backups'
+                    )
+                    : vscode.Uri.file(
+                        `${file.fsPath}.cleancode-backups`
+                    );
+
+            await vscode.workspace.fs.createDirectory(
+                backupRoot
             );
 
-        await vscode.workspace.fs.writeFile(
-            backupUri,
-            Buffer.from(originalText, 'utf8')
-        );
+            const backupUri =
+                vscode.Uri.joinPath(
+                    backupRoot,
+                    `${file.fsPath.split(/[\\/]/).pop()}.cleancode-backup`
+                );
+
+            await vscode.workspace.fs.writeFile(
+                backupUri,
+                Buffer.from(originalText, 'utf8')
+            );
+
+        }
 
         await vscode.workspace.fs.writeFile(
             file,

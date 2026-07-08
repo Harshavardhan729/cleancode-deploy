@@ -67,9 +67,15 @@ export class IssueTreeDataProvider
 
         }
 
-        treeItem.contextValue = element.type;
-
-        if (element.type === 'issue') {
+        treeItem.contextValue =
+            element.file
+                ? element.type
+                : 'empty';
+        
+        if (
+            element.type === 'issue' &&
+            element.file
+        ) {
 
             treeItem.command = {
                 command: 'cleancode-deploy.openIssue',

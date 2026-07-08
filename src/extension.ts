@@ -13,6 +13,9 @@ import { ShowStatisticsCommand } from './commands/ShowStatisticsCommand';
 import { PreviewHtmlReportCommand } from './commands/PreviewHtmlReportCommand';
 import { ExportHtmlReportCommand } from './commands/ExportHtmlReportCommand';
 import { AutoFixWorkspaceCommand } from './commands/AutoFixWorkspaceCommand';
+import { OpenBackupFolderCommand } from './commands/OpenBackupFolderCommand';
+import { RestoreBackupCommand } from './commands/RestoreBackupCommand';
+import { ClearBackupsCommand } from './commands/ClearBackupsCommand';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -47,7 +50,10 @@ export function activate(context: vscode.ExtensionContext) {
 	PreviewHtmlReportCommand.register(context);
 	ExportHtmlReportCommand.register(context);
 	AutoFixWorkspaceCommand.register(context);
-	
+	OpenBackupFolderCommand.register(context);
+	RestoreBackupCommand.register(context);
+	ClearBackupsCommand.register(context);
+
 	context.subscriptions.push(
 		vscode.languages.registerCodeActionsProvider(
 			'javascript',

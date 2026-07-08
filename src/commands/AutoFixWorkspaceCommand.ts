@@ -5,6 +5,8 @@ import { FileFilterService } from '../services/FileFilterService';
 import { Logger } from '../utils/Logger';
 import { WorkspaceScannerService } from '../services/WorkspaceScannerService';
 import { ConfigurationService } from '../services/ConfigurationService';
+import { AutoFixRegistry } from '../fixers/AutoFixRegistry';
+import { StatusBarService } from '../services/StatusBarService';
 
 export class AutoFixWorkspaceCommand {
 
@@ -23,6 +25,16 @@ export class AutoFixWorkspaceCommand {
 
                     vscode.window.showWarningMessage(
                         'Auto Fix is disabled in CleanCode Deploy settings.'
+                    );
+
+                    return;
+
+                }
+
+                if (!AutoFixRegistry.hasEnabledFixers()) {
+
+                    vscode.window.showWarningMessage(
+                        'No Auto Fix rules are enabled.'
                     );
 
                     return;
@@ -133,6 +145,18 @@ export class AutoFixWorkspaceCommand {
                 Logger.info(`Files Modified: ${fixedFiles}`);
                 Logger.info(`Fixes Applied: ${totalFixes}`);
 
+                if (workspaceFolders.length > 0) {
+
+                    Logger.info(
+                        `Backup Folder: ${workspaceFolders[0].uri.fsPath}\\.cleancode-backups`
+                    );
+
+                }
+
+                StatusBarService.autoFixCompleted(
+                    totalFixes
+                );
+
                 Logger.info('==============================');
                 Logger.info('Auto Fix Breakdown');
                 Logger.info('==============================');
@@ -169,6 +193,10 @@ export class AutoFixWorkspaceCommand {
                 }
 
                 if (fixedFiles > 0) {
+
+                    await new Promise(resolve =>
+                        setTimeout(resolve, 3000)
+                    );
 
                     const scanner =
                         new WorkspaceScannerService();

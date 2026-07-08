@@ -57,6 +57,20 @@ export class StatusBarService {
 
     }
 
+    public static autoFixCompleted(
+        fixes: number
+    ): void {
+
+        this.statusBar.text =
+            `$(tools) CleanCode Fixes: ${fixes}`;
+
+        this.statusBar.tooltip =
+            `Auto Fix completed. Fixes applied: ${fixes}`;
+
+        this.statusBar.show();
+
+    }
+
     public static cancelled(): void {
 
         this.statusBar.text =

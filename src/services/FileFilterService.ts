@@ -9,6 +9,7 @@ export class FileFilterService {
     ): boolean {
 
         if (
+            filePath.includes('.cleancode-backups') ||
             filePath.endsWith('.cleancode-backup')
         ) {
 

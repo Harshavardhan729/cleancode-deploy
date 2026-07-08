@@ -60,6 +60,21 @@
         "command": "cleancode-deploy.autoFixWorkspace",
         "title": "CleanCode Deploy: Auto Fix Workspace",
         "icon": "$(tools)"
+      },
+      {
+        "command": "cleancode-deploy.openBackupFolder",
+        "title": "CleanCode Deploy: Open Backup Folder",
+        "icon": "$(folder-opened)"
+      },
+      {
+        "command": "cleancode-deploy.restoreBackup",
+        "title": "CleanCode Deploy: Restore Backup",
+        "icon": "$(history)"
+      },
+      {
+        "command": "cleancode-deploy.clearBackups",
+        "title": "CleanCode Deploy: Clear Backups",
+        "icon": "$(trash)"
       }
     ],
     "viewsContainers": {
@@ -99,6 +114,16 @@
           "group": "navigation"
         },
         {
+          "command": "cleancode-deploy.restoreBackup",
+          "when": "view == cleancodeDeploy.issueExplorer",
+          "group": "navigation"
+        },
+        {
+          "command": "cleancode-deploy.clearBackups",
+          "when": "view == cleancodeDeploy.issueExplorer",
+          "group": "navigation"
+        },
+        {
           "command": "cleancode-deploy.showStatistics",
           "when": "view == cleancodeDeploy.issueExplorer",
           "group": "navigation"
@@ -128,6 +153,11 @@
           "type": "boolean",
           "default": true,
           "description": "Enable or disable Auto Fix functionality."
+        },
+        "cleancodeDeploy.backup.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Create backup files before applying Auto Fix."
         },
         "cleancodeDeploy.rules.consoleLog": {
           "type": "boolean",

@@ -43,4 +43,10 @@ export class AutoFixRegistry {
 
     }
 
+    public static hasEnabledFixers(): boolean {
+
+        return this.getFixers().length > 0;
+
+    }
+
 }

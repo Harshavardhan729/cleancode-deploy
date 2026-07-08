@@ -5,6 +5,7 @@ export class GlobPatternBuilder {
     public static buildExcludePattern(): string {
 
         return `{${IGNORED_FOLDERS.map(folder => `**/${folder}/**`).join(',')}}`;
+
     }
 
 }
