@@ -1,15 +1,16 @@
-import { IAutoFixer } from './interfaces/IAutoFixer';
+import { IAutoFixer } from '../interfaces/IAutoFixer';
 
-import { ConsoleLogFixer } from './javascript/ConsoleLogFixer';
-import { DebuggerFixer } from './javascript/DebuggerFixer';
-import { AlertFixer } from './javascript/AlertFixer';
-import { TodoFixer } from './javascript/TodoFixer';
-import { FixmeFixer } from './javascript/FixmeFixer';
-import { CommentedCodeFixer } from './javascript/CommentedCodeFixer';
+import { ConsoleLogFixer } from '../javascript/ConsoleLogFixer';
+import { DebuggerFixer } from '../javascript/DebuggerFixer';
+import { AlertFixer } from '../javascript/AlertFixer';
+import { TodoFixer } from '../javascript/TodoFixer';
+import { FixmeFixer } from '../javascript/FixmeFixer';
+import { CommentedCodeFixer } from '../javascript/CommentedCodeFixer';
 
-import { ConfigurationService } from '../services/ConfigurationService';
+import { ConfigurationService } from '../../services/ConfigurationService';
 
-export class AutoFixRegistry {
+
+export class JavaScriptAutoFixRegistry {
 
     public static getFixers(): IAutoFixer[] {
 
@@ -40,12 +41,6 @@ export class AutoFixRegistry {
         }
 
         return fixers;
-
-    }
-
-    public static hasEnabledFixers(): boolean {
-
-        return this.getFixers().length > 0;
 
     }
 

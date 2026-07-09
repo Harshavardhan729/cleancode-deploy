@@ -5,39 +5,39 @@ export class LanguageDetector {
 
     private static readonly languageMap = new Map<string, string>([
 
-        ['.js', 'JavaScript'],
-        ['.ts', 'TypeScript'],
-        ['.jsx', 'React JSX'],
-        ['.tsx', 'React TSX'],
+        ['.js', 'javascript'],
+        ['.ts', 'typescript'],
+        ['.jsx', 'javascriptreact'],
+        ['.tsx', 'typescriptreact'],
 
-        ['.py', 'Python'],
+        ['.py', 'python'],
 
-        ['.java', 'Java'],
+        ['.java', 'java'],
 
-        ['.cs', 'C#'],
+        ['.cs', 'csharp'],
 
-        ['.cpp', 'C++'],
-        ['.c', 'C'],
+        ['.cpp', 'cpp'],
+        ['.c', 'c'],
 
-        ['.go', 'Go'],
+        ['.go', 'go'],
 
-        ['.php', 'PHP'],
+        ['.php', 'php'],
 
-        ['.html', 'HTML'],
-        ['.css', 'CSS'],
+        ['.html', 'html'],
+        ['.css', 'css'],
 
-        ['.scss', 'SCSS'],
+        ['.scss', 'scss'],
 
-        ['.json', 'JSON'],
+        ['.json', 'json'],
 
-        ['.xml', 'XML'],
+        ['.xml', 'xml'],
 
-        ['.sql', 'SQL'],
+        ['.sql', 'sql'],
 
-        ['.yml', 'YAML'],
-        ['.yaml', 'YAML'],
+        ['.yml', 'yaml'],
+        ['.yaml', 'yaml'],
 
-        ['.md', 'Markdown']
+        ['.md', 'markdown']
 
     ]);
 
@@ -51,9 +51,10 @@ export class LanguageDetector {
 
             language:
                 this.languageMap.get(extension) ??
-                'Unknown'
+                'unknown'
 
         };
+
     }
 
 }

@@ -1,11 +1,11 @@
 import { IAutoFixer } from '../interfaces/IAutoFixer';
 import { AutoFixCategory } from '../../models/AutoFixCategory';
 
-export class TodoFixer implements IAutoFixer {
+export class PhpFixmeFixer implements IAutoFixer {
 
-    public readonly name = 'TODO';
+    public readonly name = 'php FIXME';
 
-    public readonly language = 'javascript';
+    public readonly language = 'php';
 
     public readonly category =
         AutoFixCategory.Comment;
@@ -14,7 +14,7 @@ export class TodoFixer implements IAutoFixer {
         line: string
     ): boolean {
 
-        return line.includes('TODO');
+        return line.includes('FIXME');
 
     }
 

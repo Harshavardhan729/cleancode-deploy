@@ -1,8 +1,14 @@
 import { IAutoFixer } from '../interfaces/IAutoFixer';
+import { AutoFixCategory } from '../../models/AutoFixCategory';
 
 export class CommentedCodeFixer implements IAutoFixer {
 
     public readonly name = 'commented code';
+
+    public readonly language = 'javascript';
+
+    public readonly category =
+        AutoFixCategory.Comment;
 
     public canFix(
         line: string

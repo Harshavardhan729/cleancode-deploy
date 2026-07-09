@@ -1,20 +1,20 @@
 import { IAutoFixer } from '../interfaces/IAutoFixer';
 import { AutoFixCategory } from '../../models/AutoFixCategory';
 
-export class TodoFixer implements IAutoFixer {
+export class PhpEchoFixer implements IAutoFixer {
 
-    public readonly name = 'TODO';
+    public readonly name = 'php echo';
 
-    public readonly language = 'javascript';
+    public readonly language = 'php';
 
     public readonly category =
-        AutoFixCategory.Comment;
+        AutoFixCategory.DebugCode;
 
     public canFix(
         line: string
     ): boolean {
 
-        return line.includes('TODO');
+        return line.trim().startsWith('echo ');
 
     }
 

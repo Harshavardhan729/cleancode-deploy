@@ -1,11 +1,11 @@
 import { IAutoFixer } from '../interfaces/IAutoFixer';
 import { AutoFixCategory } from '../../models/AutoFixCategory';
 
-export class TodoFixer implements IAutoFixer {
+export class PhpTodoFixer implements IAutoFixer {
 
-    public readonly name = 'TODO';
+    public readonly name = 'php TODO';
 
-    public readonly language = 'javascript';
+    public readonly language = 'php';
 
     public readonly category =
         AutoFixCategory.Comment;

@@ -75,6 +75,11 @@
         "command": "cleancode-deploy.clearBackups",
         "title": "CleanCode Deploy: Clear Backups",
         "icon": "$(trash)"
+      },
+      {
+        "command": "cleancode-deploy.showAutoFixStatistics",
+        "title": "CleanCode Deploy: Show Auto Fix Statistics",
+        "icon": "$(graph-line)"
       }
     ],
     "viewsContainers": {

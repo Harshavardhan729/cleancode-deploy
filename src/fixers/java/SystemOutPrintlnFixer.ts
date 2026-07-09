@@ -1,11 +1,11 @@
 import { IAutoFixer } from '../interfaces/IAutoFixer';
 import { AutoFixCategory } from '../../models/AutoFixCategory';
 
-export class AlertFixer implements IAutoFixer {
+export class SystemOutPrintlnFixer implements IAutoFixer {
 
-    public readonly name = 'alert';
+    public readonly name = 'java System.out.println';
 
-    public readonly language = 'javascript';
+    public readonly language = 'java';
 
     public readonly category =
         AutoFixCategory.DebugCode;
@@ -14,7 +14,7 @@ export class AlertFixer implements IAutoFixer {
         line: string
     ): boolean {
 
-        return line.includes('alert(');
+        return line.trim().startsWith('System.out.println(');
 
     }
 

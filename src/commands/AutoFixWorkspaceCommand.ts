@@ -5,8 +5,9 @@ import { FileFilterService } from '../services/FileFilterService';
 import { Logger } from '../utils/Logger';
 import { WorkspaceScannerService } from '../services/WorkspaceScannerService';
 import { ConfigurationService } from '../services/ConfigurationService';
-import { AutoFixRegistry } from '../fixers/AutoFixRegistry';
+import { AutoFixFactory } from '../fixers/AutoFixFactory';
 import { StatusBarService } from '../services/StatusBarService';
+import { AutoFixStatisticsService } from '../services/AutoFixStatisticsService';
 
 export class AutoFixWorkspaceCommand {
 
@@ -31,8 +32,7 @@ export class AutoFixWorkspaceCommand {
 
                 }
 
-                if (!AutoFixRegistry.hasEnabledFixers()) {
-
+                if (!AutoFixFactory.hasEnabledFixers('javascript')) {
                     vscode.window.showWarningMessage(
                         'No Auto Fix rules are enabled.'
                     );
@@ -154,6 +154,11 @@ export class AutoFixWorkspaceCommand {
                 }
 
                 StatusBarService.autoFixCompleted(
+                    totalFixes
+                );
+
+                await AutoFixStatisticsService.update(
+                    fixedFiles,
                     totalFixes
                 );
 

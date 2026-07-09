@@ -16,6 +16,8 @@ import { AutoFixWorkspaceCommand } from './commands/AutoFixWorkspaceCommand';
 import { OpenBackupFolderCommand } from './commands/OpenBackupFolderCommand';
 import { RestoreBackupCommand } from './commands/RestoreBackupCommand';
 import { ClearBackupsCommand } from './commands/ClearBackupsCommand';
+import { ShowAutoFixStatisticsCommand } from './commands/ShowAutoFixStatisticsCommand';
+import { AutoFixStatisticsService } from './services/AutoFixStatisticsService';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -23,6 +25,8 @@ export function activate(context: vscode.ExtensionContext) {
 	Logger.show();
 
 	StatusBarService.initialize();
+
+	AutoFixStatisticsService.initialize(context);
 
 	const issueProvider = new IssueTreeDataProvider();
 
@@ -40,7 +44,7 @@ export function activate(context: vscode.ExtensionContext) {
 	);
 
 	context.subscriptions.push(issueTreeView);
-	
+
 	ScanWorkspaceCommand.register(context);
 	ListRulesCommand.register(context);
 	OpenIssueCommand.register(context);
@@ -53,6 +57,7 @@ export function activate(context: vscode.ExtensionContext) {
 	OpenBackupFolderCommand.register(context);
 	RestoreBackupCommand.register(context);
 	ClearBackupsCommand.register(context);
+	ShowAutoFixStatisticsCommand.register(context);
 
 	context.subscriptions.push(
 		vscode.languages.registerCodeActionsProvider(
@@ -70,6 +75,7 @@ export function activate(context: vscode.ExtensionContext) {
 			vscode.window.showInformationMessage(
 				'Hello from CleanCode Deploy 🚀'
 			);
+
 		}
 	);
 
@@ -92,6 +98,7 @@ export function activate(context: vscode.ExtensionContext) {
 	);
 
 	context.subscriptions.push(disposable);
+
 }
 
 export function deactivate() { }

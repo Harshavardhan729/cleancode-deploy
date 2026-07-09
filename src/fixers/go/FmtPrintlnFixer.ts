@@ -1,11 +1,11 @@
 import { IAutoFixer } from '../interfaces/IAutoFixer';
 import { AutoFixCategory } from '../../models/AutoFixCategory';
 
-export class AlertFixer implements IAutoFixer {
+export class FmtPrintlnFixer implements IAutoFixer {
 
-    public readonly name = 'alert';
+    public readonly name = 'go fmt.Println';
 
-    public readonly language = 'javascript';
+    public readonly language = 'go';
 
     public readonly category =
         AutoFixCategory.DebugCode;
@@ -14,7 +14,7 @@ export class AlertFixer implements IAutoFixer {
         line: string
     ): boolean {
 
-        return line.includes('alert(');
+        return line.trim().startsWith('fmt.Println(');
 
     }
 

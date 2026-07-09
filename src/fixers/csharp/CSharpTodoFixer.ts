@@ -1,11 +1,11 @@
 import { IAutoFixer } from '../interfaces/IAutoFixer';
 import { AutoFixCategory } from '../../models/AutoFixCategory';
 
-export class TodoFixer implements IAutoFixer {
+export class CSharpTodoFixer implements IAutoFixer {
 
-    public readonly name = 'TODO';
+    public readonly name = 'csharp TODO';
 
-    public readonly language = 'javascript';
+    public readonly language = 'csharp';
 
     public readonly category =
         AutoFixCategory.Comment;

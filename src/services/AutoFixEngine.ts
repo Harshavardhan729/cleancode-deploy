@@ -1,7 +1,9 @@
 import * as vscode from 'vscode';
 import { FixResult } from '../models/FixResult';
-import { AutoFixRegistry } from '../fixers/AutoFixRegistry';
+import { AutoFixFactory } from '../fixers/AutoFixFactory';
+import { LanguageDetector } from './LanguageDetector';
 import { ConfigurationService } from './ConfigurationService';
+import { AutoFixCategory } from '../models/AutoFixCategory';
 
 export class AutoFixEngine {
 
@@ -18,11 +20,19 @@ export class AutoFixEngine {
         const lines =
             originalText.split(/\r?\n/);
 
+        const detectedLanguage =
+            LanguageDetector.detect(file.fsPath);
+
         const fixers =
-            AutoFixRegistry.getFixers();
+            AutoFixFactory.getFixers(
+                detectedLanguage.language
+            );
 
         const fixBreakdown =
             new Map<string, number>();
+
+        const categoryBreakdown =
+            new Map<AutoFixCategory, number>();
 
         const filteredLines =
             lines.filter(line => {
@@ -41,6 +51,11 @@ export class AutoFixEngine {
                     (fixBreakdown.get(fixer.name) ?? 0) + 1
                 );
 
+                categoryBreakdown.set(
+                    fixer.category,
+                    (categoryBreakdown.get(fixer.category) ?? 0) + 1
+                );
+
                 return false;
 
             });
@@ -54,7 +69,8 @@ export class AutoFixEngine {
                 file: file.fsPath,
                 appliedFixes: 0,
                 modified: false,
-                fixBreakdown
+                fixBreakdown,
+                categoryBreakdown
             };
 
         }
@@ -103,7 +119,8 @@ export class AutoFixEngine {
             file: file.fsPath,
             appliedFixes,
             modified: true,
-            fixBreakdown
+            fixBreakdown,
+            categoryBreakdown
         };
 
     }
