@@ -159,6 +159,17 @@
           "default": true,
           "description": "Enable or disable Auto Fix functionality."
         },
+
+        "cleancodeDeploy.autoFix.maximumSeverity": {
+          "type": "string",
+          "enum": [
+            "Safe",
+            "Review",
+            "Risky"
+          ],
+          "default": "Safe",
+          "description": "Select the maximum Auto Fix severity that can be applied."
+        },
         "cleancodeDeploy.backup.enabled": {
           "type": "boolean",
           "default": true,

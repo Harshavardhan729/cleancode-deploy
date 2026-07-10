@@ -34,33 +34,33 @@ export class AutoFixFactory {
 
             case 'python':
                 return PythonAutoFixRegistry.getFixers();
-            
+
             case 'csharp':
                 return CSharpAutoFixRegistry.getFixers();
-            
+
             case 'php':
                 return PhpAutoFixRegistry.getFixers();
-            
+
             case 'cpp':
             case 'c':
                 return CppAutoFixRegistry.getFixers();
-            
+
             case 'go':
                 return GoAutoFixRegistry.getFixers();
-            
+
             case 'html':
                 return HtmlAutoFixRegistry.getFixers();
 
             case 'css':
             case 'scss':
                 return CssAutoFixRegistry.getFixers();
-            
+
             case 'json':
                 return JsonAutoFixRegistry.getFixers();
 
             case 'yaml':
                 return YamlAutoFixRegistry.getFixers();
-            
+
             case 'xml':
                 return XmlAutoFixRegistry.getFixers();
 
@@ -76,12 +76,40 @@ export class AutoFixFactory {
         }
 
     }
-    
+
     public static hasEnabledFixers(
         language: string
     ): boolean {
 
         return this.getFixers(language).length > 0;
+
+    }
+
+    public static hasAnyEnabledFixers(): boolean {
+
+        const supportedLanguages = [
+            'javascript',
+            'typescript',
+            'java',
+            'python',
+            'csharp',
+            'php',
+            'cpp',
+            'c',
+            'go',
+            'html',
+            'css',
+            'scss',
+            'json',
+            'yaml',
+            'xml',
+            'sql',
+            'markdown'
+        ];
+
+        return supportedLanguages.some(
+            language => this.hasEnabledFixers(language)
+        );
 
     }
 

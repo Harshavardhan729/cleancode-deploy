@@ -1,4 +1,5 @@
 import { AutoFixCategory } from './AutoFixCategory';
+import { AutoFixSeverity } from './AutoFixSeverity';
 
 export interface FixResult {
 
@@ -11,5 +12,7 @@ export interface FixResult {
     fixBreakdown: Map<string, number>;
 
     categoryBreakdown: Map<AutoFixCategory, number>;
+
+    severityBreakdown: Map<AutoFixSeverity, number>;
 
 }

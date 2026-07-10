@@ -1,4 +1,5 @@
 import { AutoFixCategory } from '../../models/AutoFixCategory';
+import { AutoFixSeverity } from '../../models/AutoFixSeverity';
 
 export interface IAutoFixer {
 
@@ -7,6 +8,8 @@ export interface IAutoFixer {
     readonly language: string;
 
     readonly category: AutoFixCategory;
+
+    readonly severity: AutoFixSeverity;
 
     canFix(
         line: string

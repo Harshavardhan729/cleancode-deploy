@@ -32,7 +32,8 @@ export class AutoFixWorkspaceCommand {
 
                 }
 
-                if (!AutoFixFactory.hasEnabledFixers('javascript')) {
+                if (!AutoFixFactory.hasAnyEnabledFixers()) {
+
                     vscode.window.showWarningMessage(
                         'No Auto Fix rules are enabled.'
                     );
@@ -82,6 +83,12 @@ export class AutoFixWorkspaceCommand {
                 const totalBreakdown =
                     new Map<string, number>();
 
+                const totalCategoryBreakdown =
+                    new Map<string, number>();
+
+                const totalSeverityBreakdown =
+                    new Map<string, number>();
+
                 await vscode.window.withProgress(
                     {
                         location: vscode.ProgressLocation.Notification,
@@ -96,7 +103,9 @@ export class AutoFixWorkspaceCommand {
 
                             if (token.isCancellationRequested) {
 
-                                Logger.warning('Auto Fix cancelled by user.');
+                                Logger.warning(
+                                    'Auto Fix cancelled by user.'
+                                );
 
                                 vscode.window.showInformationMessage(
                                     'Auto Fix cancelled.'
@@ -123,16 +132,44 @@ export class AutoFixWorkspaceCommand {
                                 fixedFiles++;
                             }
 
-                            totalFixes += result.appliedFixes;
+                            totalFixes +=
+                                result.appliedFixes;
 
-                            result.fixBreakdown.forEach((count, fixerName) => {
+                            result.fixBreakdown.forEach(
+                                (count, fixerName) => {
 
-                                totalBreakdown.set(
-                                    fixerName,
-                                    (totalBreakdown.get(fixerName) ?? 0) + count
-                                );
+                                    totalBreakdown.set(
+                                        fixerName,
+                                        (totalBreakdown.get(fixerName) ?? 0) +
+                                        count
+                                    );
 
-                            });
+                                }
+                            );
+
+                            result.categoryBreakdown.forEach(
+                                (count, category) => {
+
+                                    totalCategoryBreakdown.set(
+                                        category,
+                                        (totalCategoryBreakdown.get(category) ??
+                                            0) + count
+                                    );
+
+                                }
+                            );
+
+                            result.severityBreakdown.forEach(
+                                (count, severity) => {
+
+                                    totalSeverityBreakdown.set(
+                                        severity,
+                                        (totalSeverityBreakdown.get(severity) ??
+                                            0) + count
+                                    );
+
+                                }
+                            );
 
                         }
 
@@ -142,16 +179,18 @@ export class AutoFixWorkspaceCommand {
                 Logger.info('==============================');
                 Logger.info('Auto Fix Summary');
                 Logger.info('==============================');
+
+                Logger.info(
+                    `Maximum Auto Fix Severity: ${ConfigurationService.getMaximumAutoFixSeverity()
+                    }`
+                );
+
                 Logger.info(`Files Modified: ${fixedFiles}`);
                 Logger.info(`Fixes Applied: ${totalFixes}`);
 
-                if (workspaceFolders.length > 0) {
-
-                    Logger.info(
-                        `Backup Folder: ${workspaceFolders[0].uri.fsPath}\\.cleancode-backups`
-                    );
-
-                }
+                Logger.info(
+                    `Backup Folder: ${workspaceFolders[0].uri.fsPath}\\.cleancode-backups`
+                );
 
                 StatusBarService.autoFixCompleted(
                     totalFixes
@@ -166,11 +205,67 @@ export class AutoFixWorkspaceCommand {
                 Logger.info('Auto Fix Breakdown');
                 Logger.info('==============================');
 
-                totalBreakdown.forEach((count, fixerName) => {
+                if (totalBreakdown.size === 0) {
 
-                    Logger.info(`${fixerName}: ${count}`);
+                    Logger.info('No fixes were applied.');
 
-                });
+                } else {
+
+                    totalBreakdown.forEach(
+                        (count, fixerName) => {
+
+                            Logger.info(
+                                `${fixerName}: ${count}`
+                            );
+
+                        }
+                    );
+
+                }
+
+                Logger.info('==============================');
+                Logger.info('Category Breakdown');
+                Logger.info('==============================');
+
+                if (totalCategoryBreakdown.size === 0) {
+
+                    Logger.info('No categories recorded.');
+
+                } else {
+
+                    totalCategoryBreakdown.forEach(
+                        (count, category) => {
+
+                            Logger.info(
+                                `${category}: ${count}`
+                            );
+
+                        }
+                    );
+
+                }
+
+                Logger.info('==============================');
+                Logger.info('Severity Breakdown');
+                Logger.info('==============================');
+
+                if (totalSeverityBreakdown.size === 0) {
+
+                    Logger.info('No severities recorded.');
+
+                } else {
+
+                    totalSeverityBreakdown.forEach(
+                        (count, severity) => {
+
+                            Logger.info(
+                                `${severity}: ${count}`
+                            );
+
+                        }
+                    );
+
+                }
 
                 const action =
                     await vscode.window.showInformationMessage(
@@ -180,7 +275,7 @@ export class AutoFixWorkspaceCommand {
 
                 if (action === 'Show Details') {
 
-                    const details =
+                    const ruleDetails =
                         Array.from(totalBreakdown.entries())
                             .map(
                                 ([fixerName, count]) =>
@@ -188,8 +283,45 @@ export class AutoFixWorkspaceCommand {
                             )
                             .join('\n');
 
+                    const categoryDetails =
+                        Array.from(
+                            totalCategoryBreakdown.entries()
+                        )
+                            .map(
+                                ([category, count]) =>
+                                    `${category}: ${count}`
+                            )
+                            .join('\n');
+
+                    const severityDetails =
+                        Array.from(
+                            totalSeverityBreakdown.entries()
+                        )
+                            .map(
+                                ([severity, count]) =>
+                                    `${severity}: ${count}`
+                            )
+                            .join('\n');
+
+                    const details = [
+                        `Maximum Severity: ${ConfigurationService.getMaximumAutoFixSeverity()
+                        }`,
+                        '',
+                        'Rule Breakdown',
+                        '----------------',
+                        ruleDetails || 'No fixes were applied.',
+                        '',
+                        'Category Breakdown',
+                        '------------------',
+                        categoryDetails || 'No categories recorded.',
+                        '',
+                        'Severity Breakdown',
+                        '------------------',
+                        severityDetails || 'No severities recorded.'
+                    ].join('\n');
+
                     vscode.window.showInformationMessage(
-                        details || 'No fixes were applied.',
+                        details,
                         {
                             modal: true
                         }
@@ -213,7 +345,9 @@ export class AutoFixWorkspaceCommand {
             }
         );
 
-        context.subscriptions.push(disposable);
+        context.subscriptions.push(
+            disposable
+        );
 
     }
 

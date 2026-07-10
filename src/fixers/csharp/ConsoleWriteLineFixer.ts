@@ -1,5 +1,6 @@
 import { IAutoFixer } from '../interfaces/IAutoFixer';
 import { AutoFixCategory } from '../../models/AutoFixCategory';
+import { AutoFixSeverity } from '../../models/AutoFixSeverity';
 
 export class ConsoleWriteLineFixer implements IAutoFixer {
 
@@ -9,6 +10,9 @@ export class ConsoleWriteLineFixer implements IAutoFixer {
 
     public readonly category =
         AutoFixCategory.DebugCode;
+    
+    public readonly severity =
+        AutoFixSeverity.Safe;
 
     public canFix(
         line: string

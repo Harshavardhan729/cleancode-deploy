@@ -4,6 +4,7 @@ import { AutoFixFactory } from '../fixers/AutoFixFactory';
 import { LanguageDetector } from './LanguageDetector';
 import { ConfigurationService } from './ConfigurationService';
 import { AutoFixCategory } from '../models/AutoFixCategory';
+import { AutoFixSeverity } from '../models/AutoFixSeverity';
 
 export class AutoFixEngine {
 
@@ -23,9 +24,25 @@ export class AutoFixEngine {
         const detectedLanguage =
             LanguageDetector.detect(file.fsPath);
 
-        const fixers =
+        const availableFixers =
             AutoFixFactory.getFixers(
                 detectedLanguage.language
+            );
+
+        const maximumSeverity =
+            ConfigurationService.getMaximumAutoFixSeverity();
+
+        const severityOrder: Record<AutoFixSeverity, number> = {
+            [AutoFixSeverity.Safe]: 1,
+            [AutoFixSeverity.Review]: 2,
+            [AutoFixSeverity.Risky]: 3
+        };
+
+        const fixers =
+            availableFixers.filter(
+                fixer =>
+                    severityOrder[fixer.severity] <=
+                    severityOrder[maximumSeverity]
             );
 
         const fixBreakdown =
@@ -34,6 +51,8 @@ export class AutoFixEngine {
         const categoryBreakdown =
             new Map<AutoFixCategory, number>();
 
+        const severityBreakdown =
+            new Map<AutoFixSeverity, number>();
         const filteredLines =
             lines.filter(line => {
 
@@ -51,9 +70,9 @@ export class AutoFixEngine {
                     (fixBreakdown.get(fixer.name) ?? 0) + 1
                 );
 
-                categoryBreakdown.set(
-                    fixer.category,
-                    (categoryBreakdown.get(fixer.category) ?? 0) + 1
+                severityBreakdown.set(
+                    fixer.severity,
+                    (severityBreakdown.get(fixer.severity) ?? 0) + 1
                 );
 
                 return false;
@@ -67,10 +86,11 @@ export class AutoFixEngine {
 
             return {
                 file: file.fsPath,
-                appliedFixes: 0,
-                modified: false,
+                appliedFixes,
+                modified: true,
                 fixBreakdown,
-                categoryBreakdown
+                categoryBreakdown,
+                severityBreakdown
             };
 
         }
@@ -120,7 +140,8 @@ export class AutoFixEngine {
             appliedFixes,
             modified: true,
             fixBreakdown,
-            categoryBreakdown
+            categoryBreakdown,
+            severityBreakdown
         };
 
     }

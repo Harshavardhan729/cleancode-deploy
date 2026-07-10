@@ -1,5 +1,6 @@
 import { IAutoFixer } from '../interfaces/IAutoFixer';
 import { AutoFixCategory } from '../../models/AutoFixCategory';
+import { AutoFixSeverity } from '../../models/AutoFixSeverity';
 
 export class CommentedCodeFixer implements IAutoFixer {
 
@@ -9,6 +10,9 @@ export class CommentedCodeFixer implements IAutoFixer {
 
     public readonly category =
         AutoFixCategory.Comment;
+    
+    public readonly severity =
+        AutoFixSeverity.Review;
 
     public canFix(
         line: string

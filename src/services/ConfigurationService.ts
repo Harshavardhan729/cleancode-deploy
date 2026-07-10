@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { AutoFixSeverity } from '../models/AutoFixSeverity';
 
 export class ConfigurationService {
 
@@ -31,6 +32,17 @@ export class ConfigurationService {
         return vscode.workspace
             .getConfiguration('cleancodeDeploy.backup')
             .get<boolean>('enabled', true);
+
+    }
+
+    public static getMaximumAutoFixSeverity(): AutoFixSeverity {
+
+        return vscode.workspace
+            .getConfiguration('cleancodeDeploy.autoFix')
+            .get<AutoFixSeverity>(
+                'maximumSeverity',
+                AutoFixSeverity.Safe
+            );
 
     }
 
