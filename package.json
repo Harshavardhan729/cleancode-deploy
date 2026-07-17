@@ -159,16 +159,20 @@
           "default": true,
           "description": "Enable or disable Auto Fix functionality."
         },
-
-        "cleancodeDeploy.autoFix.maximumSeverity": {
+        "cleancodeDeploy.autoFix.previewOnly": {
+          "type": "boolean",
+          "default": false,
+          "description": "Preview Auto Fix results without modifying workspace files."
+        },
+        "cleancodeDeploy.autoFix.profile": {
           "type": "string",
           "enum": [
-            "Safe",
-            "Review",
-            "Risky"
+            "Conservative",
+            "Balanced",
+            "Aggressive"
           ],
-          "default": "Safe",
-          "description": "Select the maximum Auto Fix severity that can be applied."
+          "default": "Conservative",
+          "description": "Select the Auto Fix profile."
         },
         "cleancodeDeploy.backup.enabled": {
           "type": "boolean",

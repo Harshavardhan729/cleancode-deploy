@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { AutoFixSeverity } from '../models/AutoFixSeverity';
+import { AutoFixProfile } from '../models/AutoFixProfile';
 
 export class ConfigurationService {
 
@@ -35,14 +36,45 @@ export class ConfigurationService {
 
     }
 
-    public static getMaximumAutoFixSeverity(): AutoFixSeverity {
+
+
+    public static getAutoFixProfile(): AutoFixProfile {
 
         return vscode.workspace
             .getConfiguration('cleancodeDeploy.autoFix')
-            .get<AutoFixSeverity>(
-                'maximumSeverity',
-                AutoFixSeverity.Safe
+            .get<AutoFixProfile>(
+                'profile',
+                AutoFixProfile.Conservative
             );
+
+    }
+
+    public static getProfileSeverity(): AutoFixSeverity {
+
+        const profile =
+            this.getAutoFixProfile();
+
+        switch (profile) {
+
+            case AutoFixProfile.Balanced:
+                return AutoFixSeverity.Review;
+
+            case AutoFixProfile.Aggressive:
+                return AutoFixSeverity.Risky;
+
+            case AutoFixProfile.Conservative:
+            default:
+                return AutoFixSeverity.Safe;
+
+        }
+
+    }
+
+    public static isAutoFixPreviewOnly(): boolean {
+
+        return vscode.workspace
+            .getConfiguration('cleancodeDeploy.autoFix')
+            .get<boolean>('previewOnly', false);
 
     }
 

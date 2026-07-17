@@ -5,6 +5,7 @@ import { LanguageDetector } from './LanguageDetector';
 import { ConfigurationService } from './ConfigurationService';
 import { AutoFixCategory } from '../models/AutoFixCategory';
 import { AutoFixSeverity } from '../models/AutoFixSeverity';
+import { Logger } from '../utils/Logger';
 
 export class AutoFixEngine {
 
@@ -30,7 +31,7 @@ export class AutoFixEngine {
             );
 
         const maximumSeverity =
-            ConfigurationService.getMaximumAutoFixSeverity();
+            ConfigurationService.getProfileSeverity();
 
         const severityOrder: Record<AutoFixSeverity, number> = {
             [AutoFixSeverity.Safe]: 1,
@@ -53,12 +54,13 @@ export class AutoFixEngine {
 
         const severityBreakdown =
             new Map<AutoFixSeverity, number>();
+
         const filteredLines =
             lines.filter(line => {
 
                 const fixer =
-                    fixers.find(f =>
-                        f.canFix(line)
+                    fixers.find(currentFixer =>
+                        currentFixer.canFix(line)
                     );
 
                 if (!fixer) {
@@ -68,6 +70,11 @@ export class AutoFixEngine {
                 fixBreakdown.set(
                     fixer.name,
                     (fixBreakdown.get(fixer.name) ?? 0) + 1
+                );
+
+                categoryBreakdown.set(
+                    fixer.category,
+                    (categoryBreakdown.get(fixer.category) ?? 0) + 1
                 );
 
                 severityBreakdown.set(
@@ -86,8 +93,8 @@ export class AutoFixEngine {
 
             return {
                 file: file.fsPath,
-                appliedFixes,
-                modified: true,
+                appliedFixes: 0,
+                modified: false,
                 fixBreakdown,
                 categoryBreakdown,
                 severityBreakdown
@@ -97,6 +104,26 @@ export class AutoFixEngine {
 
         const updatedText =
             filteredLines.join('\n');
+
+        const previewOnly =
+            ConfigurationService.isAutoFixPreviewOnly();
+
+        if (previewOnly) {
+
+            Logger.info(
+                `Preview Only: ${file.fsPath}`
+            );
+
+            return {
+                file: file.fsPath,
+                appliedFixes,
+                modified: false,
+                fixBreakdown,
+                categoryBreakdown,
+                severityBreakdown
+            };
+
+        }
 
         if (ConfigurationService.isBackupEnabled()) {
 
@@ -117,10 +144,21 @@ export class AutoFixEngine {
                 backupRoot
             );
 
+            const fileName =
+                file.fsPath.split(/[\\/]/).pop();
+
+            if (!fileName) {
+
+                throw new Error(
+                    `Unable to determine file name: ${file.fsPath}`
+                );
+
+            }
+
             const backupUri =
                 vscode.Uri.joinPath(
                     backupRoot,
-                    `${file.fsPath.split(/[\\/]/).pop()}.cleancode-backup`
+                    `${fileName}.cleancode-backup`
                 );
 
             await vscode.workspace.fs.writeFile(
